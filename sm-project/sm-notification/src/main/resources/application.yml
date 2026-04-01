@@ -1,0 +1,38 @@
+server:
+  port: 8005
+
+spring:
+  application:
+    name: sm-notification
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:18375
+        namespace: public
+      config:
+        server-addr: localhost:18375
+        file-extension: yml
+  datasource:
+    url: jdbc:mysql://localhost:3306/sm_notification?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: ${MYSQL_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: localhost
+      port: 59000
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.softmanage: DEBUG
