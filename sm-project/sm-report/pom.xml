@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.softmanage</groupId>
+        <artifactId>sm-project</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>sm-report</artifactId>
+    <name>SoftManage Report Service</name>
+    <description>报表服务 - 仪表板、进度统计、甘特图、工作量分析、异常统计</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.softmanage</groupId>
+            <artifactId>sm-common</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+

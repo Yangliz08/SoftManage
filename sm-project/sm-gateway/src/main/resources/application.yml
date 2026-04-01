@@ -1,0 +1,77 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: sm-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:18375
+        namespace: public
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:3000"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        # Auth Service
+        - id: auth-service
+          uri: lb://sm-auth
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
+        # Task Service
+        - id: task-service
+          uri: lb://sm-task
+          predicates:
+            - Path=/api/tasks/**
+          filters:
+            - StripPrefix=1
+        # Workflow Service
+        - id: workflow-service
+          uri: lb://sm-workflow
+          predicates:
+            - Path=/api/workflow/**
+          filters:
+            - StripPrefix=1
+        # Report Service
+        - id: report-service
+          uri: lb://sm-report
+          predicates:
+            - Path=/api/report/**
+          filters:
+            - StripPrefix=1
+        # Notification Service
+        - id: notification-service
+          uri: lb://sm-notification
+          predicates:
+            - Path=/api/notify/**
+          filters:
+            - StripPrefix=1
+        # Audit Service
+        - id: audit-service
+          uri: lb://sm-audit
+          predicates:
+            - Path=/api/audit/**
+          filters:
+            - StripPrefix=1
+
+jwt:
+  secret: SoftManage2024SecretKeyForJwtToken!@#$%^&*()1234567890
+  whitelist:
+    - /api/auth/login
+    - /api/auth/register
+    - /api/auth/refresh
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
