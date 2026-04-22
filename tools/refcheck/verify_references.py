@@ -294,7 +294,7 @@ def verify_reference(ref: Reference, verbose: bool = False) -> Finding:
         finding.confidence = "none"
 
     # Add notes for Chinese references
-    if any(ord(c) > 0x4E00 for c in ref.title):
+    if any(0x4E00 <= ord(c) <= 0x9FFF for c in ref.title):
         finding.notes += (
             " Note: Chinese-language reference — recommend verifying via "
             "CNKI/知网 (requires institutional credentials)."
