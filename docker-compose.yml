@@ -1,0 +1,129 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: softmanage
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-guest}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Build backend services from local source (development)
+  gateway:
+    build:
+      context: ./sm-project/sm-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8200:8200"
+    depends_on:
+      - mysql
+      - redis
+      - rabbitmq
+
+  auth:
+    build:
+      context: ./sm-project/sm-auth
+      dockerfile: Dockerfile
+    ports:
+      - "8201:8201"
+    depends_on:
+      - mysql
+
+  task:
+    build:
+      context: ./sm-project/sm-task
+      dockerfile: Dockerfile
+    ports:
+      - "8202:8202"
+    depends_on:
+      - mysql
+
+  workflow:
+    build:
+      context: ./sm-project/sm-workflow
+      dockerfile: Dockerfile
+    ports:
+      - "8203:8203"
+    depends_on:
+      - mysql
+
+  report:
+    build:
+      context: ./sm-project/sm-report
+      dockerfile: Dockerfile
+    ports:
+      - "8204:8204"
+    depends_on:
+      - mysql
+
+  notification:
+    build:
+      context: ./sm-project/sm-notification
+      dockerfile: Dockerfile
+    ports:
+      - "8205:8205"
+    depends_on:
+      - mysql
+
+  audit:
+    build:
+      context: ./sm-project/sm-audit
+      dockerfile: Dockerfile
+    ports:
+      - "8206:8206"
+    depends_on:
+      - mysql
+
+  ai:
+    build:
+      context: ./sm-project/sm-ai
+      dockerfile: Dockerfile
+    ports:
+      - "8207:8207"
+    depends_on:
+      - mysql
+
+  frontend:
+    build:
+      context: ./sm-project-vue
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    depends_on:
+      - gateway
+
+volumes:
+  mysql_data:
+
