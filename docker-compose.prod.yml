@@ -1,0 +1,95 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: softmanage
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  gateway:
+    image: ${DOCKERHUB_USERNAME:-youruser}/softmanage-gateway:latest
+    ports:
+      - "8200:8200"
+    depends_on:
+      - mysql
+      - redis
+      - rabbitmq
+
+  auth:
+    image: ${DOCKERHUB_USERNAME:-youruser}/softmanage-auth:latest
+    ports:
+      - "8201:8201"
+    depends_on:
+      - mysql
+
+  task:
+    image: ${DOCKERHUB_USERNAME:-youruser}/softmanage-task:latest
+    ports:
+      - "8202:8202"
+    depends_on:
+      - mysql
+
+  workflow:
+    image: ${DOCKERHUB_USERNAME:-youruser}/softmanage-workflow:latest
+    ports:
+      - "8203:8203"
+    depends_on:
+      - mysql
+
+  report:
+    image: ${DOCKERHUB_USERNAME:-youruser}/softmanage-report:latest
+    ports:
+      - "8204:8204"
+    depends_on:
+      - mysql
+
+  notification:
+    image: ${DOCKERHUB_USERNAME:-youruser}/softmanage-notification:latest
+    ports:
+      - "8205:8205"
+    depends_on:
+      - mysql
+
+  audit:
+    image: ${DOCKERHUB_USERNAME:-youruser}/softmanage-audit:latest
+    ports:
+      - "8206:8206"
+    depends_on:
+      - mysql
+
+  ai:
+    image: ${DOCKERHUB_USERNAME:-youruser}/softmanage-ai:latest
+    ports:
+      - "8207:8207"
+    depends_on:
+      - mysql
+
+  frontend:
+    image: ${DOCKERHUB_USERNAME:-youruser}/softmanage-frontend:latest
+    ports:
+      - "3002:3002"
+    depends_on:
+      - gateway
+
+volumes:
+  mysql_data:
+
