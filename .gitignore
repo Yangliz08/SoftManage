@@ -37,3 +37,8 @@ logs/
 mvnw
 mvnw.cmd
 
+# Local release package (contains local credentials - do not commit)
+softmanage-release-*/
+.env.local
+*.local
+

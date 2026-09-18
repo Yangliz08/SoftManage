@@ -16,7 +16,7 @@ import java.util.Map;
 @Slf4j
 public class JwtUtil {
 
-    private static final String SECRET = "change-me-in-production";
+    private static final String SECRET = "SoftManageDevJwtSecret_ChangeInProduction_0123456789abcdef";
     private static final long ACCESS_TOKEN_EXPIRATION = 24 * 60 * 60 * 1000L; // 24 小时
     private static final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000L; // 7 天
 

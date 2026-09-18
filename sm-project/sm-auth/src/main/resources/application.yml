@@ -39,7 +39,7 @@ mybatis-plus:
       logic-not-delete-value: 0
 
 jwt:
-  secret: change-me-in-production
+  secret: SoftManageDevJwtSecret_ChangeInProduction_0123456789abcdef
   expiration: 86400000
   refresh-expiration: 604800000
 

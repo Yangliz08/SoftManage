@@ -7,7 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,13 +33,24 @@ import java.util.List;
 @Component
 public class JwtAuthFilter implements GlobalFilter, Ordered {
 
+    private static final List<String> DEFAULT_WHITELIST = List.of(
+            "/api/auth/login",
+            "/api/auth/register",
+            "/api/auth/refresh"
+    );
+
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.whitelist}")
-    private List<String> whitelist;
+    private final List<String> whitelist;
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
+    public JwtAuthFilter(Environment environment) {
+        this.whitelist = Binder.get(environment)
+                .bind("jwt.whitelist", Bindable.listOf(String.class))
+                .orElse(DEFAULT_WHITELIST);
+    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
